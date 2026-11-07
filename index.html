@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Reserve seu chalé em Ilhabela: curta o mar, a Mata Atlântica e uma estadia especial no litoral norte de São Paulo."
+    />
+    <meta name="theme-color" content="#103a5b" />
+    <title>Chalé Azul — seu refúgio em Ilhabela</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
+    <script src="supabase-config.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Chalé Azul, início">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 42 42" fill="none">
+            <path d="M5 26.5 21 12l16 14.5" />
+            <path d="M10.5 23v12h21V23M17 35V25h8v10" />
+            <path d="M8 12.5c2-2 2-4 0-6m7 4c2-2 2-4 0-6" />
+          </svg>
+        </span>
+        <span class="brand-name">chalé <b>azul</b><small>ILHABELA · SP</small></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="Navegação principal">
+        <a href="#acomodacoes">O chalé</a>
+        <a href="#experiencia">A experiência</a>
+        <a href="#passeios">Passeios</a>
+        <a href="#localizacao">Localização</a>
+      </nav>
+      <a class="header-cta" href="#reservas">Planejar estadia <span aria-hidden="true">↗</span></a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <img
+          class="hero-image"
+          src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=2200&q=85"
+          alt="Imagem ilustrativa de praia tropical em tons de azul"
+          fetchpriority="high"
+          data-site-photo="hero"
+        />
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <span class="eyebrow hero-eyebrow"><span class="eyebrow-dot"></span> SEU REFÚGIO EM ILHABELA</span>
+          <h1 id="hero-title">Entre o azul<br />e a natureza.</h1>
+          <p>Um cantinho para acordar sem pressa e aproveitar a ilha do seu jeito.</p>
+          <div class="hero-actions">
+            <a class="button button-light hero-cta" href="#reservas">Planejar minha estadia <span aria-hidden="true">↗</span></a>
+            <a class="hero-link" href="#acomodacoes">Conheça a casa <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-highlights" aria-label="Destaques da hospedagem">
+            <span><span aria-hidden="true">⌂</span> Casa inteira</span>
+            <span><span aria-hidden="true">♧</span> Até 4 hóspedes</span>
+            <span><span aria-hidden="true">❄</span> Ar-condicionado</span>
+          </div>
+        </div>
+        <span class="hero-image-note" id="hero-image-note">Foto ilustrativa · atualize pelo painel administrativo</span>
+        <div class="hero-caption"><span>LITORAL NORTE DE SÃO PAULO</span><span>ILHABELA · SP</span></div>
+      </section>
+
+      <section class="booking-wrap" id="reservas" aria-labelledby="booking-title">
+        <div class="booking-card">
+          <div class="booking-intro">
+            <div>
+              <span class="eyebrow">DIAS QUE FICAM NA MEMÓRIA</span>
+              <h2 id="booking-title">Planeje sua estadia</h2>
+            </div>
+            <p>Escolha suas datas e envie um pedido direto à hospedagem.</p>
+          </div>
+          <form id="booking-form" class="booking-form">
+            <label class="booking-field" for="checkin">
+              <span class="field-label"><span class="field-icon" aria-hidden="true">↘</span> CHECK-IN</span>
+              <input id="checkin" name="checkin" type="date" required />
+            </label>
+            <label class="booking-field" for="checkout">
+              <span class="field-label"><span class="field-icon" aria-hidden="true">↗</span> CHECK-OUT</span>
+              <input id="checkout" name="checkout" type="date" required />
+            </label>
+            <label class="booking-field guests-field" for="guests">
+              <span class="field-label"><span class="field-icon" aria-hidden="true">♧</span> HÓSPEDES</span>
+              <select id="guests" name="guests">
+                <option value="1">1 hóspede</option>
+                <option value="2" selected>2 hóspedes</option>
+                <option value="3">3 hóspedes</option>
+                <option value="4">4 hóspedes</option>
+              </select>
+            </label>
+            <button class="button button-dark booking-submit" type="submit" disabled>Consultar estadia <span aria-hidden="true">→</span></button>
+            <div class="booking-contact">
+              <label class="booking-field" for="guest-name">
+                <span class="field-label">SEU NOME</span>
+                <input id="guest-name" name="guestName" type="text" autocomplete="name" placeholder="Como podemos te chamar?" required maxlength="80" />
+              </label>
+              <label class="booking-field" for="guest-email">
+                <span class="field-label">SEU E-MAIL</span>
+                <input id="guest-email" name="guestEmail" type="email" autocomplete="email" placeholder="voce@email.com" required maxlength="120" />
+              </label>
+              <label class="booking-field" for="guest-phone">
+                <span class="field-label">WHATSAPP</span>
+                <input id="guest-phone" name="guestPhone" type="tel" autocomplete="tel" placeholder="(12) 99999-9999" required maxlength="20" />
+              </label>
+            </div>
+            <label class="booking-consent">
+              <input id="privacy-consent" name="privacyConsent" type="checkbox" required />
+              <span>Autorizo o uso dos meus dados para análise e resposta a este pedido. Consulte o <a href="privacidade.html" target="_blank" rel="noreferrer">aviso de privacidade</a>.</span>
+            </label>
+            <div class="booking-security" id="booking-security">
+              <span class="field-label">VERIFICAÇÃO DE SEGURANÇA</span>
+              <div id="turnstile-widget"></div>
+              <span id="security-feedback" role="status" aria-live="polite">A verificação de segurança será carregada aqui.</span>
+            </div>
+            <label class="booking-honeypot" aria-hidden="true" tabindex="-1">
+              Deixe este campo vazio
+              <input name="website" type="text" autocomplete="off" tabindex="-1" />
+            </label>
+          </form>
+          <div class="booking-feedback" id="booking-feedback" aria-live="polite">
+            <span>✳</span> Carregando as informações da hospedagem…
+          </div>
+          <p class="booking-privacy">O pedido será enviado à hospedagem. O envio não confirma a estadia nem implica pagamento.</p>
+        </div>
+      </section>
+
+      <section class="intro-section section-shell" id="acomodacoes">
+        <div class="intro-copy">
+          <span class="eyebrow">UM LUGAR PARA DESACELERAR</span>
+          <h2>Onde a natureza<br />marca o ritmo.</h2>
+          <p class="intro-description" id="property-description">
+            Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé Azul foi pensado
+            para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza,
+            com tudo no lugar — inclusive o tempo.
+          </p>
+          <div class="host-note">
+            <span class="host-avatar" aria-hidden="true">C</span>
+            <span><b>Um cantinho cuidado com carinho</b><small>Feito para você se sentir em casa.</small></span>
+          </div>
+        </div>
+        <div class="feature-list" id="experiencia">
+          <div class="feature-item"><span class="feature-icon" aria-hidden="true">⌂</span><span><b>Casa inteira</b><small>Privacidade para curtir no seu ritmo</small></span></div>
+          <div class="feature-item"><span class="feature-icon" aria-hidden="true">♧</span><span><b>Até 4 hóspedes</b><small>Conforto para compartilhar a viagem</small></span></div>
+          <div class="feature-item"><span class="feature-icon" aria-hidden="true">☼</span><span><b>Natureza por perto</b><small>Um cenário que convida a respirar</small></span></div>
+          <div class="feature-item"><span class="feature-icon" aria-hidden="true">⌁</span><span><b>Wi-Fi e conforto</b><small>O essencial, sem abrir mão do aconchego</small></span></div>
+          <div class="feature-item"><span class="feature-icon" aria-hidden="true">❄</span><span><b>Ar-condicionado incluso</b><small>Conforto para relaxar depois de curtir a ilha</small></span></div>
+          <a class="text-link" href="#galeria">Explore cada detalhe <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section class="stay-details section-shell" id="informacoes-estadia" hidden aria-labelledby="stay-details-title">
+        <div class="section-heading">
+          <div><span class="eyebrow">INFORMAÇÕES IMPORTANTES</span><h2 id="stay-details-title">Antes de reservar.</h2></div>
+        </div>
+        <div class="stay-details-grid">
+          <article class="stay-detail-card" id="checkin-detail" hidden><span class="eyebrow">CHECK-IN</span><p id="checkin-time-display"></p></article>
+          <article class="stay-detail-card" id="checkout-detail" hidden><span class="eyebrow">CHECK-OUT</span><p id="checkout-time-display"></p></article>
+          <article class="stay-detail-card" id="house-rules-detail" hidden><span class="eyebrow">REGRAS DA HOSPEDAGEM</span><p id="house-rules-display"></p></article>
+          <article class="stay-detail-card" id="payment-policy-detail" hidden><span class="eyebrow">PAGAMENTO E TAXAS</span><p id="payment-policy-display"></p></article>
+          <article class="stay-detail-card" id="cancellation-policy-detail" hidden><span class="eyebrow">CANCELAMENTO</span><p id="cancellation-policy-display"></p></article>
+        </div>
+      </section>
+
+      <section class="gallery-section section-shell" id="galeria" aria-labelledby="gallery-title">
+        <div class="section-heading">
+          <div><span class="eyebrow">UM GOSTINHO DO QUE TE ESPERA</span><h2 id="gallery-title">Entre, fique à vontade.</h2></div>
+          <a class="text-link" href="#reservas">Quero conhecer de perto <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="gallery-grid">
+          <figure class="gallery-main">
+            <img src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=1200&q=85" alt="Imagem ilustrativa de uma casa de madeira entre as árvores" loading="lazy" data-site-photo="0" />
+            <figcaption>O seu refúgio, rodeado de verde</figcaption>
+          </figure>
+          <figure><img src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?auto=format&fit=crop&w=900&q=80" alt="Interior de casa de campo iluminado e acolhedor" loading="lazy" data-site-photo="1" /><figcaption>Espaços para ficar</figcaption></figure>
+          <figure><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80" alt="Sala de estar confortável com vista para a natureza" loading="lazy" data-site-photo="2" /><figcaption>Conforto sem complicação</figcaption></figure>
+          <figure><img src="https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80" alt="Quarto iluminado com decoração natural" loading="lazy" data-site-photo="3" /><figcaption>Descanso de verdade</figcaption></figure>
+          <figure><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=80" alt="Paisagem tranquila de montanhas e água ao amanhecer" loading="lazy" data-site-photo="4" /><figcaption>Um convite para explorar</figcaption></figure>
+        </div>
+        <p class="gallery-disclaimer" id="gallery-disclaimer">Estas fotos são ilustrativas e podem ser trocadas pela hospedagem. As imagens reais do chalé estarão disponíveis aqui quando forem publicadas.</p>
+      </section>
+
+      <section class="quote-band" aria-label="Uma pausa especial">
+        <span class="quote-mark" aria-hidden="true">“</span>
+        <p>Às vezes, tudo o que a gente precisa é de um lugar para simplesmente estar.</p>
+        <span class="quote-credit">CHALÉ AZUL · ILHABELA</span>
+      </section>
+
+      <section class="island-section" id="passeios">
+        <div class="island-inner">
+          <div class="island-heading">
+            <div><span class="eyebrow">MAIS QUE UM DESTINO</span><h2>Ilhabela no seu ritmo.</h2></div>
+            <p>Mar, mata e um mundo de caminhos para explorar. Monte seus dias sem pressa — a ilha tem espaço para todo tipo de viagem.</p>
+          </div>
+          <div class="island-grid">
+            <article class="island-card"><span class="island-number">01 / MAR</span><span class="island-symbol" aria-hidden="true">≈</span><h3>Praias para descobrir</h3><p>Encontre seu canto entre águas claras, enseadas tranquilas e paisagens que convidam a ficar mais um pouco.</p></article>
+            <article class="island-card"><span class="island-number">02 / MATA</span><span class="island-symbol" aria-hidden="true">⌁</span><h3>Natureza de perto</h3><p>Trilhas, cachoeiras e o verde da Mata Atlântica fazem parte do cenário de uma ilha cheia de vida.</p></article>
+            <article class="island-card"><span class="island-number">03 / VOCÊ</span><span class="island-symbol" aria-hidden="true">☼</span><h3>Tempo para aproveitar</h3><p>Um mergulho sem olhar o relógio, uma refeição sem pressa, uma viagem que respeita o seu ritmo.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="location-section section-shell" id="localizacao">
+        <div class="location-copy">
+          <span class="eyebrow">MAIS PERTO DO QUE VOCÊ IMAGINA</span>
+          <h2>O caminho também<br />faz parte da viagem.</h2>
+          <p id="location-description">Ilhabela é um convite para ir mais devagar. Descubra praias, trilhas e cenários inesquecíveis — e aproveite uma estadia feita para descansar entre um passeio e outro.</p>
+          <a class="text-link" id="location-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Ilhabela%2C+SP" target="_blank" rel="noreferrer">Explorar a região no mapa <span aria-hidden="true">↗</span></a>
+        </div>
+        <a class="location-image" id="location-map-image-link" href="https://www.google.com/maps/search/?api=1&amp;query=Ilhabela%2C+SP" target="_blank" rel="noreferrer" aria-label="Ver Ilhabela no mapa">
+          <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=85" alt="Imagem ilustrativa de uma praia tropical" loading="lazy" />
+          <span class="map-pin" aria-hidden="true"><span>⌖</span></span>
+          <span class="location-label"><b id="location-address">Ilhabela · Litoral Norte · São Paulo</b><small>Veja a localização no mapa</small></span>
+        </a>
+      </section>
+
+      <section class="final-cta">
+        <span class="eyebrow">SUA PRÓXIMA HISTÓRIA COMEÇA AQUI</span>
+        <h2>Um respiro te espera.</h2>
+        <p>Escolha suas datas e venha descobrir o seu cantinho na ilha.</p>
+        <a class="button button-light" href="#reservas">Consultar disponibilidade <span aria-hidden="true">→</span></a>
+        <a class="whatsapp-link" id="whatsapp-link" href="#" target="_blank" rel="noreferrer" hidden>Falar no WhatsApp <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="#" aria-label="Chalé Azul, início">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 42 42" fill="none"><path d="M5 26.5 21 12l16 14.5" /><path d="M10.5 23v12h21V23M17 35V25h8v10" /><path d="M8 12.5c2-2 2-4 0-6m7 4c2-2 2-4 0-6" /></svg>
+        </span>
+        <span class="brand-name">chalé <b>azul</b><small>ILHABELA · SP</small></span>
+      </a>
+      <p>Mais natureza. Mais presença. Mais você.</p>
+      <a class="footer-admin-link" href="admin.html">Painel administrativo <span aria-hidden="true">↗</span></a>
+      <a class="footer-admin-link" href="privacidade.html">Privacidade</a>
+      <span class="footer-copy">© <span id="current-year"></span> Chalé Azul · Ilhabela, SP.</span>
+    </footer>
+
+    <a class="mobile-booking-cta" href="#reservas">Planejar estadia <span aria-hidden="true">↗</span></a>
+
+    <dialog class="confirmation-dialog" id="confirmation-dialog" aria-labelledby="confirmation-title">
+      <button class="dialog-close" type="button" aria-label="Fechar">×</button>
+      <span class="confirmation-icon" aria-hidden="true">✓</span>
+      <span class="eyebrow">QUE BOM TER VOCÊ POR AQUI</span>
+      <h2 id="confirmation-title">Pedido de reserva recebido!</h2>
+      <p id="confirmation-message"></p>
+      <p class="confirmation-note">O pedido foi enviado pelo sistema online. A hospedagem precisará confirmar a disponibilidade; o envio não realiza pagamento.</p>
+      <button class="button button-dark dialog-done" type="button">Voltar para o site <span aria-hidden="true">→</span></button>
+    </dialog>
+    <div class="dialog-backdrop"></div>
+  </body>
+</html>

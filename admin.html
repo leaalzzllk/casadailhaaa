@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#103a5b" />
+    <meta name="description" content="Painel administrativo protegido para gerenciar os pedidos de reserva do Chalé Azul, em Ilhabela." />
+    <title>Painel de reservas — Chalé Azul, Ilhabela</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js" defer></script>
+    <script src="supabase-config.js" defer></script>
+    <script src="admin.js" defer></script>
+  </head>
+  <body>
+    <header class="admin-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 42 42" fill="none"><path d="M5 26.5 21 12l16 14.5" /><path d="M10.5 23v12h21V23M17 35V25h8v10" /><path d="M8 12.5c2-2 2-4 0-6m7 4c2-2 2-4 0-6" /></svg>
+        </span>
+        <span class="brand-name">chalé <b>azul</b><small>ILHABELA · SP</small></span>
+      </a>
+      <a class="back-link" href="index.html"><span aria-hidden="true">←</span> Voltar ao site</a>
+    </header>
+
+    <main class="admin-main">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">CHALÉ AZUL · ILHABELA</span>
+          <h1>Reservas</h1>
+          <p>Acompanhe os pedidos de estadia recebidos pelo site.</p>
+        </div>
+        <button class="button button-outline" id="logout-button" type="button" hidden>Sair <span aria-hidden="true">↗</span></button>
+      </div>
+
+      <aside class="setup-notice" role="note">
+        <span class="notice-icon" aria-hidden="true">i</span>
+        <p id="connection-notice"><strong>Conexão protegida.</strong> Pedidos e configurações são armazenados no Supabase. Somente administradores autorizados podem ver informações dos hóspedes.</p>
+      </aside>
+
+      <section class="login-panel" id="login-panel" aria-labelledby="login-title">
+        <div class="login-copy">
+          <span class="eyebrow">ACESSO RESTRITO</span>
+          <h2 id="login-title">Entre no painel</h2>
+          <p>Use a conta de administrador configurada no Supabase para acessar pedidos e dados dos hóspedes.</p>
+        </div>
+        <form class="login-form" id="login-form">
+          <label for="admin-email">E-mail<input id="admin-email" name="email" type="email" autocomplete="username" required maxlength="120" /></label>
+          <label for="admin-password">Senha<input id="admin-password" name="password" type="password" autocomplete="current-password" required maxlength="128" /></label>
+          <button class="button button-primary" type="submit">Entrar no painel <span aria-hidden="true">→</span></button>
+          <button class="text-button" id="reset-password-button" type="button">Esqueci minha senha</button>
+          <p class="form-message" id="login-message" role="status" aria-live="polite"></p>
+        </form>
+        <form class="login-form recovery-form" id="password-recovery-form" hidden>
+          <label for="new-admin-password">Nova senha<input id="new-admin-password" name="newPassword" type="password" autocomplete="new-password" minlength="8" required maxlength="128" /></label>
+          <button class="button button-primary" type="submit">Salvar nova senha <span aria-hidden="true">→</span></button>
+          <p class="form-message" id="recovery-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="admin-dashboard" hidden>
+      <section class="stats-grid" aria-label="Resumo das reservas">
+        <article class="stat-card"><span class="stat-label">TOTAL DE PEDIDOS</span><strong id="stat-total">0</strong><span class="stat-foot">reservas recebidas</span></article>
+        <article class="stat-card"><span class="stat-label">NOVAS</span><strong id="stat-new">0</strong><span class="stat-foot">aguardando resposta</span></article>
+        <article class="stat-card"><span class="stat-label">CONFIRMADAS</span><strong id="stat-confirmed">0</strong><span class="stat-foot">estadias confirmadas</span></article>
+        <article class="stat-card"><span class="stat-label">VALOR CONFIRMADO</span><strong id="stat-value">R$ 0</strong><span class="stat-foot">estimativa das confirmadas</span></article>
+      </section>
+
+      <section class="reservations-panel" aria-labelledby="list-title">
+        <div class="list-heading">
+          <div><h2 id="list-title">Pedidos recebidos</h2><p id="results-count">Nenhuma reserva</p></div>
+          <div class="filters">
+            <label class="sr-only" for="search-reservations">Buscar reserva</label>
+            <input id="search-reservations" type="search" placeholder="Buscar nome ou e-mail" />
+            <label class="sr-only" for="status-filter">Filtrar por status</label>
+            <select id="status-filter">
+              <option value="Todas">Todos os status</option>
+              <option value="requested">Solicitadas</option>
+              <option value="confirmed">Confirmadas</option>
+              <option value="declined">Recusadas</option>
+            </select>
+          </div>
+        </div>
+        <div class="list-actions"><button class="button button-outline" id="export-button" type="button">Exportar CSV <span aria-hidden="true">↓</span></button></div>
+        <div class="reservations-list" id="reservations-list" aria-live="polite"></div>
+        <p class="storage-error" id="storage-error" role="alert" hidden></p>
+      </section>
+
+      <section class="settings-panel" aria-labelledby="settings-title">
+        <div class="settings-heading"><span class="eyebrow">INFORMAÇÕES DA HOSPEDAGEM</span><h2 id="settings-title">Preços e contato</h2><p>Os preços configurados aqui serão usados nos próximos pedidos de reserva.</p></div>
+        <form class="settings-form" id="settings-form">
+          <label for="nightly-rate">Diária (R$)<input id="nightly-rate" name="nightlyRate" type="number" min="1" step="0.01" required placeholder="Ex.: 580" /></label>
+          <label for="cleaning-fee">Taxa de limpeza (R$)<input id="cleaning-fee" name="cleaningFee" type="number" min="0" step="0.01" required placeholder="Ex.: 120" /></label>
+          <label for="max-guests">Máximo de hóspedes<input id="max-guests" name="maxGuests" type="number" min="1" max="4" step="1" required /></label>
+          <label for="whatsapp-number">WhatsApp da hospedagem<input id="whatsapp-number" name="whatsapp" type="tel" autocomplete="tel" maxlength="24" placeholder="+55 12 99999-9999" /></label>
+          <button class="button button-primary" type="submit">Salvar configurações</button>
+          <p class="form-message" id="settings-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="settings-panel content-settings-panel" aria-labelledby="content-settings-title">
+        <div class="settings-heading"><span class="eyebrow">CONTEÚDO PÚBLICO</span><h2 id="content-settings-title">Descrição e localização</h2><p>Edite os textos e o destino do mapa exibidos no site.</p></div>
+        <form class="settings-form content-settings-form" id="content-settings-form">
+          <label class="settings-field-wide" for="property-description">Descrição do chalé<textarea id="property-description" name="propertyDescription" rows="5" maxlength="1000" required></textarea></label>
+          <label for="public-address">Endereço ou região exibida<input id="public-address" name="publicAddress" type="text" maxlength="200" required placeholder="Ex.: Bairro, Ilhabela — SP" /></label>
+          <label class="settings-field-wide" for="location-description">Descrição da localização<textarea id="location-description" name="locationDescription" rows="4" maxlength="1000" required></textarea></label>
+          <label class="settings-field-wide" for="maps-url">Link do mapa<input id="maps-url" name="mapsUrl" type="url" maxlength="2000" pattern="https://.*" required placeholder="https://maps.google.com/..." /></label>
+          <label for="checkin-time">Horário de check-in<input id="checkin-time" name="checkinTime" type="time" /></label>
+          <label for="checkout-time">Horário de check-out<input id="checkout-time" name="checkoutTime" type="time" /></label>
+          <label class="settings-field-wide" for="house-rules">Regras da hospedagem<textarea id="house-rules" name="houseRules" rows="4" maxlength="1200" placeholder="Uma regra por linha (opcional)"></textarea></label>
+          <label class="settings-field-wide" for="payment-policy">Pagamento e taxas<textarea id="payment-policy" name="paymentPolicy" rows="4" maxlength="1200" placeholder="Informe formas e prazos de pagamento e eventuais taxas (opcional)"></textarea></label>
+          <label class="settings-field-wide" for="cancellation-policy">Política de cancelamento<textarea id="cancellation-policy" name="cancellationPolicy" rows="4" maxlength="1200" placeholder="Explique as condições de cancelamento (opcional)"></textarea></label>
+          <p class="settings-field-wide settings-privacy-note">O endereço/região e o link do mapa ficam visíveis para qualquer visitante. Se preferir não divulgar o endereço completo, informe somente o bairro ou a região.</p>
+          <button class="button button-primary" type="submit">Salvar descrição e localização</button>
+          <p class="form-message settings-field-wide" id="content-settings-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="photos-panel" aria-labelledby="photos-title">
+        <div class="settings-heading">
+          <span class="eyebrow">A CARA DA SUA HOSPEDAGEM</span>
+          <h2 id="photos-title">Fotos do site</h2>
+          <p>Envie fotos reais do chalé, dos quartos e dos espaços. Elas aparecem para todos assim que o upload terminar.</p>
+        </div>
+        <p class="photo-upload-guidance">JPG, PNG ou WebP · até 20 MB por foto. As imagens são otimizadas automaticamente para o site; prefira fotos horizontais em alta resolução.</p>
+        <div class="photo-grid">
+          <article class="photo-slot photo-slot-featured" data-photo-slot="hero">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">⌁</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">FOTO DE CAPA</span><strong>Imagem principal do site</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Ex.: Vista do chalé cercado pela mata" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+          <article class="photo-slot" data-photo-slot="0">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">⌂</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">GALERIA · FOTO 1</span><strong>O chalé por fora</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Descreva o que aparece na foto" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+          <article class="photo-slot" data-photo-slot="1">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">⌂</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">GALERIA · FOTO 2</span><strong>A sala e a varanda</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Descreva o que aparece na foto" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+          <article class="photo-slot" data-photo-slot="2">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">⌂</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">GALERIA · FOTO 3</span><strong>O quarto</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Descreva o que aparece na foto" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+          <article class="photo-slot" data-photo-slot="3">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">≈</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">GALERIA · FOTO 4</span><strong>Quarto e descanso</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Descreva o que aparece na foto" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+          <article class="photo-slot" data-photo-slot="4">
+            <div class="photo-preview"><img class="photo-preview-image" alt="" /><span class="photo-placeholder" aria-hidden="true">≈</span></div>
+            <div class="photo-slot-content"><span class="reservation-label">GALERIA · FOTO 5</span><strong>Vista da ilha ou área externa</strong><label class="photo-alt-label">Descrição da imagem para acessibilidade<input class="photo-alt-input" type="text" maxlength="160" placeholder="Descreva o que aparece na foto" /></label><label class="button button-outline photo-upload-button">Escolher foto<input class="photo-file-input" type="file" accept="image/jpeg,image/png,image/webp" /></label><button class="photo-remove-button" type="button" hidden>Remover foto</button><span class="photo-upload-status" role="status" aria-live="polite"></span></div>
+          </article>
+        </div>
+      </section>
+      </section>
+      <p class="admin-footnote">Os preços exibidos são estimativas informativas. Confirme a disponibilidade antes de aceitar uma solicitação.</p>
+    </main>
+  </body>
+</html>
