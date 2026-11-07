@@ -57,121 +57,6 @@ async function hashClientIp(ip: string, secret: string) {
   ).join("");
 }
 
-type WhatsAppNotificationStatus = "accepted" | "not_configured" | "failed";
-
-function formatBookingDate(value: string) {
-  const [year, month, day] = value.split("-");
-  return `${day}/${month}/${year}`;
-}
-
-async function notifyOwnerOnWhatsApp(details: {
-  guestName: string;
-  guestPhone: string;
-  checkin: string;
-  checkout: string;
-  guests: number;
-  total: number;
-}): Promise<WhatsAppNotificationStatus> {
-  const accessToken = Deno.env.get("WHATSAPP_ACCESS_TOKEN");
-  const phoneNumberId = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID");
-  const ownerPhone = Deno.env.get("WHATSAPP_OWNER_PHONE");
-  const templateName = Deno.env.get("WHATSAPP_TEMPLATE_NAME");
-  const apiVersion = Deno.env.get("WHATSAPP_GRAPH_API_VERSION");
-  const configuration = [
-    accessToken,
-    phoneNumberId,
-    ownerPhone,
-    templateName,
-    apiVersion,
-  ];
-
-  if (configuration.every((value) => !value)) return "not_configured";
-  if (
-    !accessToken || !phoneNumberId || !ownerPhone || !templateName ||
-    !apiVersion ||
-    !/^\d{8,20}$/.test(phoneNumberId) ||
-    !/^\d{8,15}$/.test(ownerPhone) ||
-    !/^[a-z0-9_]{1,512}$/.test(templateName) ||
-    !/^v\d+\.\d+$/.test(apiVersion)
-  ) {
-    console.error(
-      "WhatsApp notification configuration is incomplete or invalid.",
-    );
-    return "failed";
-  }
-
-  try {
-    const response = await fetch(
-      `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messaging_product: "whatsapp",
-          recipient_type: "individual",
-          to: ownerPhone,
-          type: "template",
-          template: {
-            name: templateName,
-            language: { code: "pt_BR" },
-            components: [{
-              type: "body",
-              parameters: [
-                { type: "text", text: details.guestName },
-                { type: "text", text: details.guestPhone },
-                { type: "text", text: formatBookingDate(details.checkin) },
-                { type: "text", text: formatBookingDate(details.checkout) },
-                { type: "text", text: String(details.guests) },
-                {
-                  type: "text",
-                  text: new Intl.NumberFormat("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  }).format(details.total),
-                },
-              ],
-            }],
-          },
-        }),
-        signal: AbortSignal.timeout(8000),
-      },
-    );
-
-    if (!response.ok) {
-      let apiErrorCode: string | number | undefined;
-      try {
-        const body: unknown = await response.json();
-        if (
-          body && typeof body === "object" && "error" in body &&
-          body.error && typeof body.error === "object" &&
-          "code" in body.error &&
-          (typeof body.error.code === "string" ||
-            typeof body.error.code === "number")
-        ) {
-          apiErrorCode = body.error.code;
-        }
-      } catch {
-        // The HTTP status is sufficient to report the delivery failure.
-      }
-      console.error("WhatsApp rejected the reservation notification.", {
-        status: response.status,
-        apiErrorCode,
-      });
-      return "failed";
-    }
-
-    return "accepted";
-  } catch (error) {
-    console.error("WhatsApp reservation notification request failed.", {
-      errorName: error instanceof Error ? error.name : "UnknownError",
-    });
-    return "failed";
-  }
-}
-
 Deno.serve(async (request) => {
   const allowedOrigin = Deno.env.get("ALLOWED_ORIGIN")?.replace(/\/+$/, "");
   const origin = request.headers.get("origin") ?? "";
@@ -352,23 +237,7 @@ Deno.serve(async (request) => {
     }
 
     const reservation = Array.isArray(data) ? data[0] : data;
-    const notificationStatus = await notifyOwnerOnWhatsApp({
-      guestName,
-      guestPhone,
-      checkin,
-      checkout,
-      guests,
-      total: Number(reservation.total),
-    });
-
-    return jsonResponse(
-      {
-        reservation,
-        whatsapp_notification: notificationStatus,
-      },
-      200,
-      origin,
-    );
+    return jsonResponse({ reservation }, 200, origin);
   } catch (error) {
     console.error("create-reservation request failed:", error);
     return jsonResponse(

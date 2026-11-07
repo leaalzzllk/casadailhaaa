@@ -10,6 +10,7 @@ const securityFeedback = document.querySelector("#security-feedback");
 const bookingSubmit = bookingForm.querySelector('button[type="submit"]');
 const confirmationDialog = document.querySelector("#confirmation-dialog");
 const confirmationMessage = document.querySelector("#confirmation-message");
+const confirmationWhatsAppLink = document.querySelector("#confirmation-whatsapp-link");
 const menuToggle = document.querySelector(".menu-toggle");
 const mainNav = document.querySelector(".main-nav");
 const whatsappLink = document.querySelector("#whatsapp-link");
@@ -19,6 +20,7 @@ let turnstileWidgetId;
 let turnstileToken = "";
 let turnstileApiPromise;
 let bookingProtectionReady = false;
+let whatsappOwnerDigits = "";
 
 const today = new Date();
 const localDate = new Date(today.getTime() - today.getTimezoneOffset() * 60_000)
@@ -101,10 +103,12 @@ function updateGuestOptions(maxGuests) {
 function updateWhatsAppLink(phone) {
   const rawDigits = phone.replace(/\D/g, "");
   const digits = rawDigits.length === 10 || rawDigits.length === 11 ? `55${rawDigits}` : rawDigits;
-  if (digits.length < 10) {
+  if (digits.length < 10 || digits.length > 15) {
+    whatsappOwnerDigits = "";
     whatsappLink.hidden = true;
     return;
   }
+  whatsappOwnerDigits = digits;
   const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a hospedagem em Ilhabela.");
   whatsappLink.href = `https://wa.me/${digits}?text=${message}`;
   whatsappLink.hidden = false;
@@ -421,11 +425,22 @@ bookingForm.addEventListener("submit", async (event) => {
     const reservation = data.reservation;
     const dateFormatter = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long" });
     const dates = `${dateFormatter.format(new Date(`${checkinInput.value}T12:00:00`))} a ${dateFormatter.format(new Date(`${checkoutInput.value}T12:00:00`))}`;
-    const notificationNotice = data.whatsapp_notification === "accepted"
-      ? " A Meta aceitou o envio do aviso ao WhatsApp da hospedagem."
-      : " Não foi possível confirmar o aviso automático por WhatsApp; a hospedagem deve conferir o painel. Seu pedido está salvo, não o envie novamente.";
     confirmationMessage.textContent =
-      `${dates} · ${Number(guestsInput.value)} ${Number(guestsInput.value) === 1 ? "hóspede" : "hóspedes"} · ${reservation.nights} ${reservation.nights === 1 ? "noite" : "noites"}. Estimativa: ${formatCurrency(Number(reservation.total))}. Seu pedido foi recebido; a hospedagem ainda precisa confirmar a disponibilidade.${notificationNotice}`;
+      `${dates} · ${Number(guestsInput.value)} ${Number(guestsInput.value) === 1 ? "hóspede" : "hóspedes"} · ${reservation.nights} ${reservation.nights === 1 ? "noite" : "noites"}. Estimativa: ${formatCurrency(Number(reservation.total))}. Seu pedido foi salvo; a hospedagem ainda precisa confirmar a disponibilidade.`;
+    const whatsappMessage = [
+      "Olá! Acabei de enviar um pedido de reserva pelo site do Chalé Azul.",
+      `Nome: ${guestNameInput.value.trim()}`,
+      `WhatsApp: ${guestPhoneInput.value.trim()}`,
+      `E-mail: ${guestEmailInput.value.trim()}`,
+      `Período: ${dates}`,
+      `Hóspedes: ${Number(guestsInput.value)}`,
+      `Estimativa: ${formatCurrency(Number(reservation.total))}`,
+      "Por favor, confirme a disponibilidade.",
+    ].join("\n");
+    confirmationWhatsAppLink.href = whatsappOwnerDigits
+      ? `https://wa.me/${whatsappOwnerDigits}?text=${encodeURIComponent(whatsappMessage)}`
+      : "#";
+    confirmationWhatsAppLink.hidden = !whatsappOwnerDigits;
     confirmationDialog.showModal();
     bookingForm.reset();
     updateCheckoutMinimum();
