@@ -421,8 +421,11 @@ bookingForm.addEventListener("submit", async (event) => {
     const reservation = data.reservation;
     const dateFormatter = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long" });
     const dates = `${dateFormatter.format(new Date(`${checkinInput.value}T12:00:00`))} a ${dateFormatter.format(new Date(`${checkoutInput.value}T12:00:00`))}`;
+    const notificationNotice = data.whatsapp_notification === "accepted"
+      ? " A Meta aceitou o envio do aviso ao WhatsApp da hospedagem."
+      : " Não foi possível confirmar o aviso automático por WhatsApp; a hospedagem deve conferir o painel. Seu pedido está salvo, não o envie novamente.";
     confirmationMessage.textContent =
-      `${dates} · ${Number(guestsInput.value)} ${Number(guestsInput.value) === 1 ? "hóspede" : "hóspedes"} · ${reservation.nights} ${reservation.nights === 1 ? "noite" : "noites"}. Estimativa: ${formatCurrency(Number(reservation.total))}. Seu pedido foi enviado; a hospedagem ainda precisa confirmar a disponibilidade.`;
+      `${dates} · ${Number(guestsInput.value)} ${Number(guestsInput.value) === 1 ? "hóspede" : "hóspedes"} · ${reservation.nights} ${reservation.nights === 1 ? "noite" : "noites"}. Estimativa: ${formatCurrency(Number(reservation.total))}. Seu pedido foi recebido; a hospedagem ainda precisa confirmar a disponibilidade.${notificationNotice}`;
     confirmationDialog.showModal();
     bookingForm.reset();
     updateCheckoutMinimum();
