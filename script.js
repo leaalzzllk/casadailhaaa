@@ -428,7 +428,7 @@ bookingForm.addEventListener("submit", async (event) => {
     confirmationMessage.textContent =
       `${dates} · ${Number(guestsInput.value)} ${Number(guestsInput.value) === 1 ? "hóspede" : "hóspedes"} · ${reservation.nights} ${reservation.nights === 1 ? "noite" : "noites"}. Estimativa: ${formatCurrency(Number(reservation.total))}. Seu pedido foi salvo; a hospedagem ainda precisa confirmar a disponibilidade.`;
     const whatsappMessage = [
-      "Olá! Acabei de enviar um pedido de reserva pelo site do Chalé Azul.",
+      "Olá! Acabei de enviar um pedido de reserva pelo site do Maya chalé.",
       `Nome: ${guestNameInput.value.trim()}`,
       `WhatsApp: ${guestPhoneInput.value.trim()}`,
       `E-mail: ${guestEmailInput.value.trim()}`,

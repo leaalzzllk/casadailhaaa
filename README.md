@@ -1,4 +1,4 @@
-# Chalé Azul · Ilhabela
+# Maya chalé · Ilhabela
 
 Site estático em português com pedidos de reserva, painel administrativo e banco de dados Supabase. O projeto não recebe pagamentos: cada pedido precisa ser analisado e confirmado pela hospedagem.
 

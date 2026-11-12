@@ -6,7 +6,7 @@ create table if not exists public.site_settings (
   cleaning_fee numeric(10, 2) not null default 0 check (cleaning_fee >= 0),
   max_guests integer not null default 4 check (max_guests between 1 and 4),
   whatsapp text not null default '' check (char_length(whatsapp) <= 24),
-  property_description text not null default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé Azul foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
+  property_description text not null default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Maya chalé foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
   public_address text not null default 'Ilhabela · Litoral Norte · São Paulo',
   location_description text not null default 'Ilhabela é um convite para ir mais devagar. Descubra praias, trilhas e cenários inesquecíveis — e aproveite uma estadia feita para descansar entre um passeio e outro.',
   maps_url text not null default 'https://www.google.com/maps/search/?api=1&query=Ilhabela%2C+SP',
@@ -27,7 +27,7 @@ values (1)
 on conflict (id) do nothing;
 
 alter table public.site_settings
-  add column if not exists property_description text not null default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé Azul foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
+  add column if not exists property_description text not null default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Maya chalé foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
   add column if not exists public_address text not null default 'Ilhabela · Litoral Norte · São Paulo',
   add column if not exists location_description text not null default 'Ilhabela é um convite para ir mais devagar. Descubra praias, trilhas e cenários inesquecíveis — e aproveite uma estadia feita para descansar entre um passeio e outro.',
   add column if not exists maps_url text not null default 'https://www.google.com/maps/search/?api=1&query=Ilhabela%2C+SP',
@@ -43,7 +43,7 @@ alter table public.site_settings
 
 alter table public.site_settings
   alter column max_guests set default 4,
-  alter column property_description set default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé Azul foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
+  alter column property_description set default 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Maya chalé foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.',
   alter column public_address set default 'Ilhabela · Litoral Norte · São Paulo',
   alter column location_description set default 'Ilhabela é um convite para ir mais devagar. Descubra praias, trilhas e cenários inesquecíveis — e aproveite uma estadia feita para descansar entre um passeio e outro.',
   alter column maps_url set default 'https://www.google.com/maps/search/?api=1&query=Ilhabela%2C+SP',
@@ -108,7 +108,7 @@ alter table public.site_settings
   add constraint site_settings_hero_image_alt_check check (char_length(hero_image_alt) between 1 and 160);
 
 update public.site_settings
-set property_description = 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé Azul foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.'
+set property_description = 'Entre trilhas, águas claras e o verde da Mata Atlântica, o Maya chalé foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.'
 where property_description in (
   'Entre trilhas, águas claras e o verde da Mata Atlântica, a Casa da Ilha foi pensada para quem quer trocar a pressa por presença. Uma casa inteira, cercada de natureza, com tudo no lugar — inclusive o tempo.',
   'Entre trilhas, águas claras e o verde da Mata Atlântica, o Chalé da Ilha foi pensado para quem quer trocar a pressa por presença. Um chalé inteiro, cercado de natureza, com tudo no lugar — inclusive o tempo.'
